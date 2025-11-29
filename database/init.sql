@@ -59,4 +59,4 @@ INSERT INTO services (name, description, duration_minutes, price) VALUES
 ('Kanal Tedavisi', 'Kök kanal tedavisi', 90, 2500.00),
 ('Diş Çekimi', 'Basit diş çekimi', 30, 800.00),
 ('Beyazlatma', 'Profesyonel diş beyazlatma', 60, 2000.00),
-('İmplant', 'Diş implant uygulaması', 120, 8000.00),
+('implant', 'Diş implant uygulamasi', 120, 8000.00);

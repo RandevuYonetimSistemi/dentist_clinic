@@ -3,8 +3,8 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import os
 
-# Database URL
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://dentist_admin:dentist_password@db:5432/dentist_clinic")
+# Database URL - localhost için
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:admin@localhost:5432/dentist_clinic")
 
 # Create engine
 engine = create_engine(DATABASE_URL)
