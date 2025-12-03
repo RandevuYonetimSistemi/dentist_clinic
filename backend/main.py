@@ -6,9 +6,37 @@ from typing import List, Optional
 from pydantic import BaseModel, EmailStr
 import models
 from database import engine, get_db
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from auth import verify_password, create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES, get_password_hash
 
 # Create tables
 models.Base.metadata.create_all(bind=engine)
+
+def create_default_admin():
+    db = Session(bind=engine)
+    try:
+        user = db.query(models.Admin).filter(models.Admin.username == "admin").first()
+        if not user:
+            print("Creating default admin user...")
+            admin = models.Admin(
+                username="admin",
+                password_hash=get_password_hash("admin123")
+            )
+            db.add(admin)
+            db.commit()
+            print("Default admin user created.")
+        else:
+            # Admin varsa şifresini güncelle (her ihtimale karşı)
+            print("Admin user exists. Updating password to default...")
+            user.password_hash = get_password_hash("admin123")
+            db.commit()
+            print("Admin password reset to default (admin123).")
+    except Exception as e:
+        print(f"Error creating/updating admin user: {e}")
+    finally:
+        db.close()
+
+create_default_admin()
 
 # Initialize FastAPI
 app = FastAPI(title="Diş Kliniği Randevu Sistemi API")
@@ -107,9 +135,7 @@ class ServiceUpdate(BaseModel):
 
 
 
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from auth import verify_password, create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES
-from datetime import timedelta
+
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/login")
 
