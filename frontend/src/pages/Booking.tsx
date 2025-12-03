@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { api } from '../lib/api';
-import { Doctor, AvailableSlot, Appointment } from '../types';
+import { Doctor, AvailableSlot, Service } from '../types';
 import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
 import { Input } from '../components/ui/Input';
-import { User, Calendar as CalendarIcon, Clock, CheckCircle, ChevronLeft, ChevronRight } from 'lucide-react';
+import { User, Calendar as CalendarIcon, CheckCircle, ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import { cn } from '../lib/utils';
 
 export const Booking = () => {
@@ -14,10 +14,12 @@ export const Booking = () => {
 
     const [step, setStep] = useState(1);
     const [doctors, setDoctors] = useState<Doctor[]>([]);
+    const [services, setServices] = useState<Service[]>([]);
     const [availableSlots, setAvailableSlots] = useState<AvailableSlot[]>([]);
     const [loading, setLoading] = useState(false);
 
     const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
+    const [selectedService, setSelectedService] = useState<Service | null>(null);
     const [selectedDate, setSelectedDate] = useState<string>('');
     const [selectedTime, setSelectedTime] = useState<string>('');
     const [patientDetails, setPatientDetails] = useState({
@@ -28,27 +30,32 @@ export const Booking = () => {
         notes: '',
     });
 
-    // Fetch doctors on mount
+    // Fetch data on mount
     useEffect(() => {
-        const fetchDoctors = async () => {
+        const fetchData = async () => {
             try {
-                const res = await api.get<Doctor[]>('/doctors');
-                setDoctors(res.data);
+                const [doctorsRes, servicesRes] = await Promise.all([
+                    api.get<Doctor[]>('/doctors'),
+                    api.get<Service[]>('/services')
+                ]);
+                setDoctors(doctorsRes.data);
+                setServices(servicesRes.data);
 
                 // Pre-select doctor if in URL
                 const doctorId = searchParams.get('doctor');
                 if (doctorId) {
-                    const doctor = res.data.find(d => d.id === parseInt(doctorId));
+                    const doctor = doctorsRes.data.find(d => d.id === parseInt(doctorId));
                     if (doctor) {
                         setSelectedDoctor(doctor);
-                        setStep(2);
+                        // If doctor is selected via URL, we might want to skip to service selection or date
+                        // But let's keep it simple and just pre-select
                     }
                 }
             } catch (error) {
-                console.error('Error fetching doctors:', error);
+                console.error('Error fetching data:', error);
             }
         };
-        fetchDoctors();
+        fetchData();
     }, [searchParams]);
 
     // Fetch available slots when doctor and date change
@@ -61,7 +68,7 @@ export const Booking = () => {
                         params: {
                             doctor_id: selectedDoctor.id,
                             start_date: selectedDate,
-                            end_date: selectedDate, // Just for one day for now, or could be range
+                            end_date: selectedDate,
                         }
                     });
                     setAvailableSlots(res.data);
@@ -81,17 +88,18 @@ export const Booking = () => {
     };
 
     const handleSubmit = async () => {
-        if (!selectedDoctor || !selectedDate || !selectedTime) return;
+        if (!selectedDoctor || !selectedService || !selectedDate || !selectedTime) return;
 
         setLoading(true);
         try {
             await api.post('/appointments', {
                 ...patientDetails,
                 doctor_id: selectedDoctor.id,
+                service_id: selectedService.id,
                 appointment_date: selectedDate,
                 appointment_time: selectedTime,
             });
-            setStep(4); // Success step
+            setStep(5); // Success step
         } catch (error) {
             console.error('Error creating appointment:', error);
             alert('Randevu oluşturulurken bir hata oluştu. Lütfen tekrar deneyiniz.');
@@ -101,10 +109,11 @@ export const Booking = () => {
     };
 
     const steps = [
-        { number: 1, title: 'Doktor Seçimi' },
-        { number: 2, title: 'Tarih ve Saat' },
-        { number: 3, title: 'Kişisel Bilgiler' },
-        { number: 4, title: 'Onay' },
+        { number: 1, title: 'Hizmet Seçimi' },
+        { number: 2, title: 'Doktor Seçimi' },
+        { number: 3, title: 'Tarih ve Saat' },
+        { number: 4, title: 'Kişisel Bilgiler' },
+        { number: 5, title: 'Onay' },
     ];
 
     return (
@@ -134,12 +143,49 @@ export const Booking = () => {
                             </span>
                         </div>
                     ))}
-                    {/* Progress Bar Background - simplified for now */}
                 </div>
             </div>
 
             <Card className="p-8">
                 {step === 1 && (
+                    <div className="space-y-6">
+                        <h2 className="text-2xl font-bold text-neutral-900">Hizmet Seçimi</h2>
+                        <div className="grid gap-6 md:grid-cols-2">
+                            {services.map((service) => (
+                                <div
+                                    key={service.id}
+                                    onClick={() => setSelectedService(service)}
+                                    className={cn(
+                                        'cursor-pointer rounded-xl border-2 p-4 transition-all hover:border-primary-400',
+                                        selectedService?.id === service.id
+                                            ? 'border-primary-600 bg-primary-50'
+                                            : 'border-neutral-200 bg-white'
+                                    )}
+                                >
+                                    <div className="flex items-center gap-4">
+                                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary-100 text-primary-600">
+                                            <Star className="h-6 w-6" />
+                                        </div>
+                                        <div>
+                                            <h3 className="font-bold text-neutral-900">{service.name}</h3>
+                                            <p className="text-sm text-neutral-600">{service.duration_minutes} dk - ₺{service.price}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="flex justify-end">
+                            <Button
+                                onClick={() => setStep(2)}
+                                disabled={!selectedService}
+                            >
+                                Devam Et <ChevronRight className="ml-2 h-4 w-4" />
+                            </Button>
+                        </div>
+                    </div>
+                )}
+
+                {step === 2 && (
                     <div className="space-y-6">
                         <h2 className="text-2xl font-bold text-neutral-900">Doktor Seçimi</h2>
                         <div className="grid gap-6 md:grid-cols-2">
@@ -168,9 +214,12 @@ export const Booking = () => {
                                 </div>
                             ))}
                         </div>
-                        <div className="flex justify-end">
+                        <div className="flex justify-between pt-6">
+                            <Button variant="outline" onClick={() => setStep(1)}>
+                                <ChevronLeft className="mr-2 h-4 w-4" /> Geri
+                            </Button>
                             <Button
-                                onClick={() => setStep(2)}
+                                onClick={() => setStep(3)}
                                 disabled={!selectedDoctor}
                             >
                                 Devam Et <ChevronRight className="ml-2 h-4 w-4" />
@@ -179,7 +228,7 @@ export const Booking = () => {
                     </div>
                 )}
 
-                {step === 2 && (
+                {step === 3 && (
                     <div className="space-y-6">
                         <h2 className="text-2xl font-bold text-neutral-900">Tarih ve Saat Seçimi</h2>
 
@@ -226,11 +275,11 @@ export const Booking = () => {
                         )}
 
                         <div className="flex justify-between pt-6">
-                            <Button variant="outline" onClick={() => setStep(1)}>
+                            <Button variant="outline" onClick={() => setStep(2)}>
                                 <ChevronLeft className="mr-2 h-4 w-4" /> Geri
                             </Button>
                             <Button
-                                onClick={() => setStep(3)}
+                                onClick={() => setStep(4)}
                                 disabled={!selectedDate || !selectedTime}
                             >
                                 Devam Et <ChevronRight className="ml-2 h-4 w-4" />
@@ -239,7 +288,7 @@ export const Booking = () => {
                     </div>
                 )}
 
-                {step === 3 && (
+                {step === 4 && (
                     <div className="space-y-6">
                         <h2 className="text-2xl font-bold text-neutral-900">Kişisel Bilgiler</h2>
                         <div className="grid gap-4 md:grid-cols-2">
@@ -281,7 +330,7 @@ export const Booking = () => {
                         </div>
 
                         <div className="flex justify-between pt-6">
-                            <Button variant="outline" onClick={() => setStep(2)}>
+                            <Button variant="outline" onClick={() => setStep(3)}>
                                 <ChevronLeft className="mr-2 h-4 w-4" /> Geri
                             </Button>
                             <Button
@@ -295,7 +344,7 @@ export const Booking = () => {
                     </div>
                 )}
 
-                {step === 4 && (
+                {step === 5 && (
                     <div className="text-center py-12">
                         <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-green-100 text-green-600">
                             <CheckCircle className="h-10 w-10" />

@@ -49,11 +49,11 @@ export const Home = () => {
                                         Hemen Randevu Al
                                     </Button>
                                 </Link>
-                                <Link to="/services">
+                                <a href="#services">
                                     <Button variant="outline" size="lg" className="w-full sm:w-auto">
                                         Hizmetlerimiz
                                     </Button>
-                                </Link>
+                                </a>
                             </div>
                             <div className="flex items-center gap-8 pt-8 text-neutral-600">
                                 <div className="flex items-center gap-2">
@@ -85,7 +85,7 @@ export const Home = () => {
             </section>
 
             {/* Services Section */}
-            <section className="container mx-auto px-4 md:px-6">
+            <section id="services" className="container mx-auto px-4 md:px-6">
                 <div className="mb-12 text-center">
                     <h2 className="text-3xl font-bold text-neutral-900 sm:text-4xl">Hizmetlerimiz</h2>
                     <p className="mt-4 text-lg text-neutral-600">

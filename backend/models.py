@@ -35,6 +35,7 @@ class Appointment(Base):
     id = Column(Integer, primary_key=True, index=True)
     patient_id = Column(Integer, ForeignKey("patients.id", ondelete="CASCADE"), nullable=False)
     doctor_id = Column(Integer, ForeignKey("doctors.id", ondelete="CASCADE"), nullable=False)
+    service_id = Column(Integer, ForeignKey("services.id", ondelete="CASCADE"), nullable=False)
     appointment_date = Column(Date, nullable=False, index=True)
     appointment_time = Column(Time, nullable=False)
     status = Column(String(20), default="scheduled")
@@ -43,6 +44,7 @@ class Appointment(Base):
     
     patient = relationship("Patient", back_populates="appointments")
     doctor = relationship("Doctor", back_populates="appointments")
+    service = relationship("Service")
 
 class Service(Base):
     __tablename__ = "services"

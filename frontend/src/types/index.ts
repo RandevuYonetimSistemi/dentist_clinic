@@ -19,12 +19,14 @@ export interface Appointment {
     id: number;
     patient_id: number;
     doctor_id: number;
+    service_id: number;
     appointment_date: string;
     appointment_time: string;
     status: string;
     notes: string;
     doctor_name?: string;
     patient_name?: string;
+    service_name?: string;
 }
 
 export interface AvailableSlot {

@@ -21,21 +21,6 @@ CREATE TABLE IF NOT EXISTS doctors (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Randevular icin Tablo
-CREATE TABLE IF NOT EXISTS appointments (
-    id SERIAL PRIMARY KEY,
-    patient_id INTEGER NOT NULL,
-    doctor_id INTEGER NOT NULL,
-    appointment_date DATE NOT NULL,
-    appointment_time TIME NOT NULL,
-    status VARCHAR(20) DEFAULT 'scheduled',
-    notes TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (patient_id) REFERENCES patients(id) ON DELETE CASCADE,
-    FOREIGN KEY (doctor_id) REFERENCES doctors(id) ON DELETE CASCADE,
-    CONSTRAINT unique_appointment UNIQUE (doctor_id, appointment_date, appointment_time)--Aynı doktorun aynı saatte 2 rendevusunu engeller
-);
-
 -- Hizmetler icin Tablo
 CREATE TABLE IF NOT EXISTS services (
     id SERIAL PRIMARY KEY,
@@ -44,6 +29,23 @@ CREATE TABLE IF NOT EXISTS services (
     duration_minutes INTEGER DEFAULT 30,
     price DECIMAL(10, 2),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Randevular icin Tablo
+CREATE TABLE IF NOT EXISTS appointments (
+    id SERIAL PRIMARY KEY,
+    patient_id INTEGER NOT NULL,
+    doctor_id INTEGER NOT NULL,
+    service_id INTEGER NOT NULL,
+    appointment_date DATE NOT NULL,
+    appointment_time TIME NOT NULL,
+    status VARCHAR(20) DEFAULT 'scheduled',
+    notes TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (patient_id) REFERENCES patients(id) ON DELETE CASCADE,
+    FOREIGN KEY (doctor_id) REFERENCES doctors(id) ON DELETE CASCADE,
+    FOREIGN KEY (service_id) REFERENCES services(id) ON DELETE CASCADE,
+    CONSTRAINT unique_appointment UNIQUE (doctor_id, appointment_date, appointment_time)
 );
 
 -- Varsayılan Doktorlari Ekle
