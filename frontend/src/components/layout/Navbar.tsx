@@ -1,13 +1,29 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { cn } from '../../lib/utils';
-import { Stethoscope } from 'lucide-react';
+import { Stethoscope, LogOut } from 'lucide-react';
 import { Button } from '../ui/Button';
 
 export const Navbar = () => {
     const location = useLocation();
+    const navigate = useNavigate();
+    const isAuthenticated = !!localStorage.getItem('token');
 
     const isActive = (path: string) => location.pathname === path;
+
+    const handleLogout = async () => {
+        try {
+            // Optional: Call backend logout endpoint
+            await fetch('http://localhost:8000/api/logout', {
+                method: 'POST',
+            });
+        } catch (error) {
+            console.error('Logout error:', error);
+        } finally {
+            localStorage.removeItem('token');
+            navigate('/login');
+        }
+    };
 
     return (
         <nav className="sticky top-0 z-50 w-full border-b border-neutral-200 bg-white/80 backdrop-blur-md">
@@ -50,8 +66,20 @@ export const Navbar = () => {
                     >
                         Yönetim Paneli
                     </Link>
+                    {isAuthenticated && (
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={handleLogout}
+                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                        >
+                            <LogOut className="mr-2 h-4 w-4" />
+                            Çıkış Yap
+                        </Button>
+                    )}
                 </div>
             </div>
         </nav>
     );
 };
+
