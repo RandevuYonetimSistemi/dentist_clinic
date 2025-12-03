@@ -41,6 +41,15 @@ export const Navbar = () => {
                     <Link to="/book">
                         <Button size="sm">Randevu Al</Button>
                     </Link>
+                    <Link
+                        to="/admin"
+                        className={cn(
+                            'text-sm font-medium transition-colors hover:text-primary-600',
+                            isActive('/admin') ? 'text-primary-600' : 'text-neutral-600'
+                        )}
+                    >
+                        Yönetim Paneli
+                    </Link>
                 </div>
             </div>
         </nav>
