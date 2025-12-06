@@ -155,7 +155,7 @@ export const Home = () => {
                                         <p>{doctor.phone}</p>
                                     </div>
                                     <Link to={`/book?doctor=${doctor.id}`} className="mt-6 block">
-                                        <Button variant="outline" className="w-full">
+                                        <Button variant="outline" className="w-full cursor-pointer">
                                             Randevu Al
                                         </Button>
                                     </Link>
