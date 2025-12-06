@@ -4,8 +4,24 @@ import { cn } from '../../lib/utils';
 import { LogOut } from 'lucide-react';
 import { Button } from '../ui/Button';
 import toothLogo from "/src/assets/tooth-logo.png";
+import { useEffect, useState } from "react";
 
 export const Navbar = () => {
+    const [scrolled, setScrolled] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.scrollY > 10) {
+                setScrolled(true);
+            } else {
+                setScrolled(false);
+            }
+        };
+
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
+
     const location = useLocation();
     const navigate = useNavigate();
     const isAuthenticated = !!localStorage.getItem('token');
@@ -27,17 +43,26 @@ export const Navbar = () => {
     };
 
     return (
-        <nav className="sticky top-0 z-50 w-full border-b border-neutral-200 bg-white/80 backdrop-blur-md">
-            <div className="container mx-auto flex h-20 items-center justify-between px-4 md:px-6">
+        <nav
+            className={`sticky top-0 z-50 w-full backdrop-blur-md transition-all duration-500 ease-in-out
+            ${scrolled ? "h-12 shadow-md bg-white/90" : "bg-white/80"}`}>
+            <div
+                className={`container mx-auto flex items-center justify-between transition-all duration-500 ease-in-out 
+                ${scrolled ? "h-12 py-1" : "h-20 py-4"}`}
+            >
+
+
+
+
                 <Link to="/" className="flex items-center gap-2">
                     <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-100 text-primary-600">
                         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-100">
-  <img 
-  src={toothLogo} 
-  alt="logo"
-  className="h-6 w-6 object-contain"
-/>
-</div>
+                            <img
+                                src={toothLogo}
+                                alt="logo"
+                                className="h-6 w-6 object-contain"
+                            />
+                        </div>
 
                     </div>
                     <span className="text-xl font-bold text-neutral-900">Diş Kliniği</span>
