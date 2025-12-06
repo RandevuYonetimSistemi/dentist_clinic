@@ -1,5 +1,6 @@
 import React from 'react';
-import { Stethoscope } from 'lucide-react';
+import toothLogo from "/src/assets/tooth-logo.png";
+
 
 export const Footer = () => {
     return (
@@ -9,7 +10,8 @@ export const Footer = () => {
                     <div className="space-y-4">
                         <div className="flex items-center gap-2">
                             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-100 text-primary-600">
-                                <Stethoscope className="h-5 w-5" />
+                                <img src={toothLogo} alt="logo" className="h-5 w-5 object-contain" />
+
                             </div>
                             <span className="text-lg font-bold text-neutral-900">Diş Kliniği</span>
                         </div>
