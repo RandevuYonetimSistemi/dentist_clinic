@@ -41,7 +41,7 @@ export const Home = () => {
                                 Gülüşünüz Bizim İçin <span className="text-primary-600">Değerli</span>
                             </h1>
                             <p className="animate-slide-up-delayed text-lg text-neutral-600">
-                                Modern teknoloji ve uzman kadromuzla, ağız ve diş sağlığınız için en iyi hizmeti sunuyoruz. Hemen randevunuzu oluşturun.
+                                Modern teknoloji ve uzman kadromuzla, ağız ve diş sağlığınız için en iyi hizmeti sunuyoruz. Hemen randevunuzu alın.
                             </p>
                             <div className="animate-slide-up-slow flex flex-col sm:flex-row gap-4">
                                 <Link to="/book">
