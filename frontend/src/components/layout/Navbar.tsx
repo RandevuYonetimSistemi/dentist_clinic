@@ -65,7 +65,7 @@ export const Navbar = () => {
                         </div>
 
                     </div>
-                    <span className="text-xl font-bold text-neutral-900">Diş Kliniği</span>
+                    <span className="text-xl font-bold text-neutral-900">Dr. Ahmet Yılmaz Diş Kliniği</span>
                 </Link>
 
                 <div className="hidden md:flex items-center gap-8">
