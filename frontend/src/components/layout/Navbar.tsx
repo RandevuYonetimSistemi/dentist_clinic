@@ -99,6 +99,15 @@ export const Navbar = () => {
                     >
                         Yönetim Paneli
                     </Link>
+                    <Link
+                        to="/about"
+                        className={cn(
+                            'text-sm font-medium transition-colors hover:text-primary-600',
+                            isActive('/about') ? 'text-primary-600' : 'text-neutral-600'
+                        )}
+                    >
+                        Hakkımızda
+                    </Link>
                     {isAuthenticated && (
                         <Button
                             variant="ghost"

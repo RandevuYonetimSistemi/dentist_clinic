@@ -5,6 +5,7 @@ import { Booking } from './pages/Booking';
 import { Admin } from './pages/Admin';
 import { Login } from './pages/Login';
 import { MyAppointments } from './pages/MyAppointments';
+import { About } from './pages/About';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/book" element={<Booking />} />
           <Route path="/my-appointments" element={<MyAppointments />} />
+          <Route path="/about" element={<About />} />
           <Route path="/login" element={<Login />} />
           <Route path="/admin" element={
             <ProtectedRoute>
