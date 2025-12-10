@@ -10,3 +10,27 @@
         @apply bg-neutral-50 text-neutral-900 antialiased;
     }
 }
+
+@keyframes slideUp {
+    0% {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-slide-up {
+    animation: slideUp 0.8s ease-out forwards;
+}
+
+.animate-slide-up-delayed {
+    animation: slideUp 1s ease-out forwards;
+}
+
+.animate-slide-up-slow {
+    animation: slideUp 1.2s ease-out forwards;
+}

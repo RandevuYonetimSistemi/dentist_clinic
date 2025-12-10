@@ -25,7 +25,7 @@ export const Footer = () => {
                         <ul className="space-y-2 text-sm text-neutral-600">
                             <li><a href="/" className="hover:text-primary-600">Ana Sayfa</a></li>
                             <li><a href="/book" className="hover:text-primary-600">Randevu Al</a></li>
-                            <li><a href="/my-appointments" className="hover:text-primary-600 cursor-pointer">Randevularım</a></li>
+                            <li><a href="/my-appointments" className="hover:text-primary-600">Randevularım</a></li>
                         </ul>
                     </div>
 

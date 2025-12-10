@@ -37,13 +37,13 @@ export const Home = () => {
                 <div className="container mx-auto px-4 md:px-6">
                     <div className="grid gap-12 lg:grid-cols-2 lg:gap-8 items-center">
                         <div className="space-y-8">
-                            <h1 className="text-4xl font-bold tracking-tight text-neutral-900 sm:text-6xl">
+                            <h1 className="animate-slide-up text-4xl font-bold tracking-tight text-neutral-900 sm:text-6xl">
                                 Gülüşünüz Bizim İçin <span className="text-primary-600">Değerli</span>
                             </h1>
-                            <p className="text-lg text-neutral-600">
+                            <p className="animate-slide-up-delayed text-lg text-neutral-600">
                                 Modern teknoloji ve uzman kadromuzla, ağız ve diş sağlığınız için en iyi hizmeti sunuyoruz. Hemen randevunuzu oluşturun.
                             </p>
-                            <div className="flex flex-col sm:flex-row gap-4">
+                            <div className="animate-slide-up-slow flex flex-col sm:flex-row gap-4">
                                 <Link to="/book">
                                     <Button size="lg" className="w-full sm:w-auto">
                                         Hemen Randevu Al
@@ -55,7 +55,7 @@ export const Home = () => {
                                     </Button>
                                 </a>
                             </div>
-                            <div className="flex items-center gap-8 pt-8 text-neutral-600">
+                            <div className="animate-slide-up-slow relative lg:ml-auto">
                                 <div className="flex items-center gap-2">
                                     <Shield className="h-5 w-5 text-primary-600" />
                                     <span className="text-sm font-medium">Güvenilir Hizmet</span>
@@ -70,7 +70,7 @@ export const Home = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="relative lg:ml-auto">
+                        <div className="relative lg:ml-auto animate-slide-up-slow">
                             <div className="relative h-[400px] w-full overflow-hidden rounded-2xl shadow-2xl lg:h-[500px] lg:w-[500px]">
                                 <img
                                     src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?q=80&w=2068&auto=format&fit=crop"
@@ -78,7 +78,6 @@ export const Home = () => {
                                     className="h-full w-full object-cover"
                                 />
                             </div>
-                            <div className="absolute -bottom-6 -left-6 -z-10 h-full w-full rounded-2xl bg-primary-100/50" />
                         </div>
                     </div>
                 </div>
@@ -155,7 +154,7 @@ export const Home = () => {
                                         <p>{doctor.phone}</p>
                                     </div>
                                     <Link to={`/book?doctor=${doctor.id}`} className="mt-6 block">
-                                        <Button variant="outline" className="w-full cursor-pointer">
+                                        <Button variant="outline" className="w-full">
                                             Randevu Al
                                         </Button>
                                     </Link>
