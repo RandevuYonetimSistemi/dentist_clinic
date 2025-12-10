@@ -417,6 +417,57 @@ def get_appointment(appointment_id: int, db: Session = Depends(get_db)):
     
     return apt_response
 
+#  TÜM RANDEVULARI LİSTELE — ADMIN PANELİ
+@app.get("/api/appointments", response_model=List[AppointmentResponse])
+def get_all_appointments(db: Session = Depends(get_db)):
+    appointments = db.query(models.Appointment).order_by(models.Appointment.appointment_date.desc()).all()
+
+    result = []
+    for apt in appointments:
+        doctor = db.query(models.Doctor).filter(models.Doctor.id == apt.doctor_id).first()
+        patient = db.query(models.Patient).filter(models.Patient.id == apt.patient_id).first()
+        service = db.query(models.Service).filter(models.Service.id == apt.service_id).first()
+
+        apt_response = AppointmentResponse.from_orm(apt)
+        apt_response.doctor_name = f"{doctor.first_name} {doctor.last_name}" if doctor else None
+        apt_response.patient_name = f"{patient.first_name} {patient.last_name}" if patient else None
+        apt_response.service_name = service.name if service else None
+
+        result.append(apt_response)
+    
+    return result
+
+
+
+#  RANDEVU ONAYLAMA
+@app.put("/api/appointments/{appointment_id}/approve", response_model=AppointmentResponse)
+def approve_appointment(appointment_id: int, db: Session = Depends(get_db)):
+    appointment = db.query(models.Appointment).filter(models.Appointment.id == appointment_id).first()
+    if not appointment:
+        raise HTTPException(status_code=404, detail="Randevu bulunamadı")
+    
+    appointment.status = "approved"
+    db.commit()
+    db.refresh(appointment)
+    
+    return appointment
+
+
+
+#  RANDEVU REDDETME
+@app.put("/api/appointments/{appointment_id}/reject", response_model=AppointmentResponse)
+def reject_appointment(appointment_id: int, db: Session = Depends(get_db)):
+    appointment = db.query(models.Appointment).filter(models.Appointment.id == appointment_id).first()
+    if not appointment:
+        raise HTTPException(status_code=404, detail="Randevu bulunamadı")
+    
+    appointment.status = "rejected"
+    db.commit()
+    db.refresh(appointment)
+    
+    return appointment
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
