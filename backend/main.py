@@ -3,7 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from datetime import datetime, date, time, timedelta
 from typing import List, Optional
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
+import re
 import models
 from database import engine, get_db
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -53,9 +54,9 @@ app.add_middleware(
 
 
 # Pydantic Schemas api veri giriş cikisleri
-class AppointmentCreate(BaseModel):# Randevu oluşturma için giriş modeli
-    first_name: str
-    last_name: str
+class AppointmentCreate(BaseModel):
+    first_name: str = Field(..., pattern=r"^[A-Za-zÇĞİÖŞÜçğıöşü\s]+$")
+    last_name: str = Field(..., pattern=r"^[A-Za-zÇĞİÖŞÜçğıöşü\s]+$")
     email: EmailStr
     phone: str
     doctor_id: int
